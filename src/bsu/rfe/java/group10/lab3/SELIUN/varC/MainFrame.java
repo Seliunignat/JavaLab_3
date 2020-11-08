@@ -1,6 +1,7 @@
 package bsu.rfe.java.group10.lab3.SELIUN.varC;
 
 import javax.swing.*;
+import javax.swing.text.html.Option;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,7 +9,7 @@ import java.io.*;
 
 public class MainFrame extends JFrame {
 
-    private int WIDTH = 1080, HEIGHT = 720;
+    private int WIDTH = 700, HEIGHT = 500;
 
     private Double[] coefficients;
 
@@ -66,7 +67,7 @@ public class MainFrame extends JFrame {
                     saveToTextFile(fileChooser.getSelectedFile());
             }
         };
-        // Добавить соответствующий пункт подменю в меню "Файл"
+        // Добавить соответствующий пункт подменю в меню "Сохранить в текстовый файл"
         saveToTextMenuItem = fileMenu.add(saveToTextAction);
         // По умолчанию пункт меню является недоступным (данных ещѐ нет)
         saveToTextMenuItem.setEnabled(false);
@@ -88,25 +89,25 @@ public class MainFrame extends JFrame {
                     saveToGraphicsFile(fileChooser.getSelectedFile());
             }
         };
-        // Добавить соответствующий пункт подменю в меню "Файл"
+        // Добавить соответствующий пункт подменю в меню "Сохранить данные для построения графика"
         saveToGraphicsMenuItem = fileMenu.add(saveToGraphicsAction);
         // По умолчанию пункт меню является недоступным (данных ещѐ нет)
         saveToGraphicsMenuItem.setEnabled(false);
 
-        /*
-        JMenuItem openFileMenuItem = fileMenu.add("Октрыть");
-            openFileMenuItem.addActionListener(new ActionListener() {
+        Action searchValueAction = new AbstractAction("Найти значение многочлена") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                String value = JOptionPane.showInputDialog(MainFrame.this, "Введите значение для поиска", "Поиск значения", JOptionPane.QUESTION_MESSAGE);
+                // Установить введенное значение в качестве иголки в визуализаторе
+                renderer.setNeedle(value);
+                // Обновить таблицу
+                getContentPane().repaint();
             }
-        });
-        */
-
-        //JFileChooser fileChooser = new JFileChooser();
-        //fileChooser.setCurrentDirectory(new File("."));
-        //int result = fileChooser.showSaveDialog(MainFrame.this);
-        //File selectedFile = fileChooser.getSelectedFile();
+        };
+        //Добавить действие в меню "Таблица"
+        searchValueMenuItem = tableMenu.add(searchValueAction);
+        // По умолчанию пункт меню является недоступным (данных ещѐ нет)
+        searchValueMenuItem.setEnabled(false);
 
         XFromTextField = new JTextField("0.0", 10);
         XToTextField = new JTextField("0.0", 10);
@@ -130,6 +131,89 @@ public class MainFrame extends JFrame {
         xPreferencesBox.add(Box.createHorizontalStrut(10));
         xPreferencesBox.add(StepTextField);
         xPreferencesBox.add(Box.createHorizontalGlue());
+
+        // Создать кнопку "Вычислить"
+        JButton buttonCalc = new JButton("Вычислить");
+        // Задать действие на нажатие "Вычислить" и привязать к кнопке
+        buttonCalc.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    // Считать значения границ отрезка, шага из полей ввода
+                    Double from = Double.parseDouble(XFromTextField.getText());
+                    Double to = Double.parseDouble(XToTextField.getText());
+                    Double step = Double.parseDouble(StepTextField.getText());
+                    // На основе считанных данных создать модель таблицы
+                    data = new GornerTableModel(from, to, step, MainFrame.this.coefficients);
+                    // Создать новый экземпляр таблицы
+                    JTable table = new JTable(data);
+                    // Установить в качестве визуализатора ячеек для класса
+                    // Double разработанный визуализатор
+                    table.setDefaultRenderer(Double.class, renderer);
+                    // Установить размер строки таблицы в 30 пикселов
+                    table.setRowHeight(30);
+                    // Удалить все вложенные элементы из контейнера hBoxResult
+                    hBoxResult.removeAll();
+                    // Добавить в hBoxResult таблицу, "обѐрнутую" в панель с
+                    // полосами прокрутки
+                    hBoxResult.add(new JScrollPane(table));
+                    // Обновить область содержания главного окна
+                    getContentPane().validate();
+                    // Пометить ряд элементов меню как доступных
+                    saveToTextMenuItem.setEnabled(true);
+                    saveToGraphicsMenuItem.setEnabled(true);
+                    searchValueMenuItem.setEnabled(true);
+                }catch(NumberFormatException ex)
+                {
+                    // В случае ошибки преобразования показать сообщение об ошибке
+                    JOptionPane.showMessageDialog(MainFrame.this, "Ошибка в формате записи числа с плавающей точкой", "Ошибочный формат числа", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+        // Создать кнопку "Очистить поля"
+        JButton buttonReset = new JButton("Очистить поля");
+        // Задать действие на нажатие "Очистить поля" и привязать к кнопке
+        buttonReset.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                // Установить в полях ввода значения по умолчанию
+                XFromTextField.setText("0.0");
+                XToTextField.setText("1.0");
+                StepTextField.setText("0.1");
+                // Удалить все вложенные элементы контейнера hBoxResult
+                hBoxResult.removeAll();
+                // Добавить в контейнер пустую панель
+                hBoxResult.add(new JPanel());
+                // Пометить элементы меню как недоступные
+                saveToTextMenuItem.setEnabled(false);
+                saveToGraphicsMenuItem.setEnabled(false);
+                searchValueMenuItem.setEnabled(false);
+                // Обновить область содержания главного окна
+                getContentPane().validate();
+            }
+        });
+
+        // Поместить созданные кнопки в контейнер
+        Box hboxButtons = Box.createHorizontalBox();
+        hboxButtons.setBorder(BorderFactory.createBevelBorder(1));
+        hboxButtons.add(Box.createHorizontalGlue());
+        hboxButtons.add(buttonCalc);
+        hboxButtons.add(Box.createHorizontalStrut(30));
+        hboxButtons.add(buttonReset);
+        hboxButtons.add(Box.createHorizontalGlue());
+        // Установить предпочтительный размер области равным удвоенному
+        // минимальному, чтобы при компоновке окна область совсем не сдавили
+        hboxButtons.setPreferredSize(new Dimension(new Double(hboxButtons.getMaximumSize().getWidth()).intValue(), new Double(hboxButtons.getMinimumSize().getHeight()).intValue()*2));
+        // Разместить контейнер с кнопками в нижней (южной) области компоновки
+        getContentPane().add(hboxButtons, BorderLayout.SOUTH);
+
+        // Область для вывода результата пока что пустая
+        hBoxResult = Box.createHorizontalBox();
+        hBoxResult.add(new JPanel());
+// Установить контейнер hBoxResult в главной области компоновки
+        getContentPane().add(hBoxResult, BorderLayout.CENTER);
+
+
 
 //Добавление всех коробок, в основное окно(контейнер)
         getContentPane().add(xPreferencesBox, BorderLayout.NORTH);
