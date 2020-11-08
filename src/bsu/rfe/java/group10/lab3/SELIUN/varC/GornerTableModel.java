@@ -44,12 +44,14 @@ public class GornerTableModel extends AbstractTableModel
         if (columnIndex==0) {
             return x;
         } else {
-            Double result;
+           /* Double result;
             // Вычисление значения в точке по схеме Горнера.
             // Вспомнить 1-ый курс и реализовать
             // ...
             return result;
+            */
         }
+        return null;
     }
 
     public Class<?> getColumnClass(int columnIndex) {
