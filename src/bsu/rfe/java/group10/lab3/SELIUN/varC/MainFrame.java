@@ -6,6 +6,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 
 public class MainFrame extends JFrame {
 
@@ -241,6 +244,14 @@ public class MainFrame extends JFrame {
 
     protected void saveToTextFile(File selectedFile) {
         try {
+            DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance();
+            formatter.setMaximumFractionDigits(5);
+            formatter.setGroupingUsed(false);
+
+            DecimalFormatSymbols dottedDouble = formatter.getDecimalFormatSymbols();
+            dottedDouble.setDecimalSeparator('.');
+            formatter.setDecimalFormatSymbols(dottedDouble);
+
 // Создать новый символьный поток вывода, направленный в указанный файл
             PrintStream out = new PrintStream(selectedFile);
 // Записать в поток вывода заголовочные сведения
@@ -257,8 +268,8 @@ public class MainFrame extends JFrame {
             out.println("================================================");
 // Записать в поток вывода значения в точках
             for (int i = 0; i < data.getRowCount(); i++) {
-                out.println("Значение в точке " + data.getValueAt(i, 0) +
-                        " равно " + data.getValueAt(i, 1));
+                out.println("Значение в точке " + formatter.format(data.getValueAt(i, 0)) +
+                        " равно " + formatter.format(data.getValueAt(i, 1)));
             }
 // Закрыть поток
             out.close();
