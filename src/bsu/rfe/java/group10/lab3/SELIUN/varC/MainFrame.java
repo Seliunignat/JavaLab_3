@@ -169,6 +169,7 @@ public class MainFrame extends JFrame {
                     // Установить в качестве визуализатора ячеек для класса
                     // Double разработанный визуализатор
                     table.setDefaultRenderer(Double.class, renderer);
+                    table.getColumn("Значение многочлена Float").setCellRenderer(renderer);
                     // Установить размер строки таблицы в 30 пикселов
                     table.setRowHeight(30);
                     // Удалить все вложенные элементы из контейнера hBoxResult
@@ -277,7 +278,7 @@ public class MainFrame extends JFrame {
                 // Записать в поток вывода значение X в точке
                 out.writeDouble((Double)data.getValueAt(i,0));
                 // значение многочлена в точке
-                out.writeDouble((Double)data.getValueAt(i,0));
+                out.writeDouble((Double)data.getValueAt(i,1));
             }
             out.close();
         }

@@ -14,17 +14,25 @@ public class GornerTableCellRenderer implements TableCellRenderer {
     private JLabel label = new JLabel();
 
     private DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance();
+    private DecimalFormat formatterFloat = (DecimalFormat) NumberFormat.getInstance();
 
     public GornerTableCellRenderer()
     {
 
-        formatter.setMaximumFractionDigits(5);
+        formatter.setMaximumFractionDigits(8);
         formatter.setGroupingUsed(false);
 
         DecimalFormatSymbols dottedDouble = formatter.getDecimalFormatSymbols();
         dottedDouble.setDecimalSeparator('.');
         formatter.setDecimalFormatSymbols(dottedDouble);
 
+
+        formatterFloat.setMaximumFractionDigits(8);
+        formatterFloat.setGroupingUsed(false);
+
+        DecimalFormatSymbols dottedFloat = formatter.getDecimalFormatSymbols();
+        dottedFloat.setDecimalSeparator('.');
+        formatterFloat.setDecimalFormatSymbols(dottedFloat);
         // Разместить надпись внутри панели
         panel.add(label);
         // Установить выравнивание надписи по левому краю панели
@@ -33,21 +41,28 @@ public class GornerTableCellRenderer implements TableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        // Преобразовать число в строку с помощью форматировщика
-        String formattedDouble = formatter.format(value);
-        // Установить текст надписи равным строковому представлению числа
-        label.setText(formattedDouble);
-        if(column==1 && needle!=null && needle.equals((formattedDouble)))
-        {
-            // Номер столбца = 1 (т.е. второй столбец)
-            // + иголка не null (т.е. мы что-то ищем)
-            // + значение иголки совпадает со значением ячейки таблицы -
-            // окрасить задний фон панели в красный цвет
-            panel.setBackground(Color.RED);
-        }else {
-            panel.setBackground(Color.WHITE);
+        if(column!=2) {
+            // Преобразовать число в строку с помощью форматировщика
+            String formattedDouble = formatter.format(value);
+            // Установить текст надписи равным строковому представлению числа
+            label.setText(formattedDouble);
+            if (column == 1 && needle != null && needle.equals((formattedDouble))) {
+                // Номер столбца = 1 (т.е. второй столбец)
+                // + иголка не null (т.е. мы что-то ищем)
+                // + значение иголки совпадает со значением ячейки таблицы -
+                // окрасить задний фон панели в красный цвет
+                panel.setBackground(Color.RED);
+            } else {
+                panel.setBackground(Color.WHITE);
+            }
+            return panel;
         }
-        return panel;
+        else
+        {
+            String formattedFloat = formatterFloat.format(value);
+            label.setText(formattedFloat);
+            return panel;
+        }
     }
 
     public void setNeedle(String needle) {
