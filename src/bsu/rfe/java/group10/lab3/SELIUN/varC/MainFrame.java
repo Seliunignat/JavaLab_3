@@ -25,8 +25,11 @@ public class MainFrame extends JFrame {
     private JMenuItem saveToTextMenuItem;
     private JMenuItem saveToGraphicsMenuItem;
     private JMenuItem searchValueMenuItem;
+    private JMenuItem aboutProgram;
 
     private Box hBoxResult;
+
+    private Icon MyPhoto = new ImageIcon("C:\\Documents\\Programming\\Java\\JavaLab_3\\MyPhoto.jpg");
 
     // Визуализатор ячеек таблицы
     private GornerTableCellRenderer renderer = new GornerTableCellRenderer();
@@ -50,6 +53,8 @@ public class MainFrame extends JFrame {
         menuBar.add(fileMenu);
         JMenu tableMenu = new JMenu("Таблица");
         menuBar.add(tableMenu);
+        JMenu infoMenu = new JMenu("Справка");
+        menuBar.add(infoMenu);
 
         Action saveToTextAction = new AbstractAction("Сохранить в текстовый файл") {
             @Override
@@ -109,6 +114,16 @@ public class MainFrame extends JFrame {
         searchValueMenuItem = tableMenu.add(searchValueAction);
         // По умолчанию пункт меню является недоступным (данных ещѐ нет)
         searchValueMenuItem.setEnabled(false);
+
+        Action showInfoAction = new AbstractAction("О программе") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(MainFrame.this, "Селюн И. А., 10 группа", "О программе", JOptionPane.NO_OPTION, MyPhoto);
+            }
+        };
+
+        aboutProgram = infoMenu.add(showInfoAction);
+        searchValueMenuItem.setEnabled(true);
 
         XFromTextField = new JTextField("0.0", 10);
         XToTextField = new JTextField("0.0", 10);

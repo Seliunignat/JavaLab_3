@@ -48,10 +48,10 @@ public class GornerTableModel extends AbstractTableModel
             // Вычисление значения в точке по схеме Горнера.
             // Вспомнить 1-ый курс и реализовать
             // ...
-            Double result = coefficients[0];
+            Double result = coefficients[coefficients.length - 1];
             Double slag;
             Double chlen = 0.0;
-            for (int i = coefficients.length - 1; i > 0; i--)
+            for (int i = 0; i < coefficients.length - 1; i++)
             {
                 slag = chlen + coefficients[i];
                 chlen = slag * x;
