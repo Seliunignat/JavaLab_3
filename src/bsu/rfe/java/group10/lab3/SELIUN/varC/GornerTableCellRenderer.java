@@ -17,10 +17,6 @@ public class GornerTableCellRenderer implements TableCellRenderer {
 
     public GornerTableCellRenderer()
     {
-        // Разместить надпись внутри панели
-        panel.add(label);
-        // Установить выравнивание надписи по левому краю панели
-        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         formatter.setMaximumFractionDigits(5);
         formatter.setGroupingUsed(false);
@@ -28,6 +24,11 @@ public class GornerTableCellRenderer implements TableCellRenderer {
         DecimalFormatSymbols dottedDouble = formatter.getDecimalFormatSymbols();
         dottedDouble.setDecimalSeparator('.');
         formatter.setDecimalFormatSymbols(dottedDouble);
+
+        // Разместить надпись внутри панели
+        panel.add(label);
+        // Установить выравнивание надписи по левому краю панели
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
     }
 
     @Override

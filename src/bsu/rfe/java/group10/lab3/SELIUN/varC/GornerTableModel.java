@@ -2,6 +2,7 @@ package bsu.rfe.java.group10.lab3.SELIUN.varC;
 
 import javax.swing.table.AbstractTableModel;
 
+@SuppressWarnings("serial")
 public class GornerTableModel extends AbstractTableModel
 {
     private Double[] coefficients;
@@ -44,14 +45,21 @@ public class GornerTableModel extends AbstractTableModel
         if (columnIndex==0) {
             return x;
         } else {
-           /* Double result;
             // Вычисление значения в точке по схеме Горнера.
             // Вспомнить 1-ый курс и реализовать
             // ...
+            Double result = coefficients[0];
+            Double slag;
+            Double chlen = 0.0;
+            for (int i = coefficients.length - 1; i > 0; i--)
+            {
+                slag = chlen + coefficients[i];
+                chlen = slag * x;
+            }
+            result += chlen;
             return result;
-            */
         }
-        return null;
+        //return null;
     }
 
     public Class<?> getColumnClass(int columnIndex) {

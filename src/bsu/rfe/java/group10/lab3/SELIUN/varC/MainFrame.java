@@ -34,9 +34,10 @@ public class MainFrame extends JFrame {
     private GornerTableModel data;
 
 
-    public MainFrame()
+    public MainFrame(Double[] coefficients)
     {
         super("Табулирование многочлена на отрезке по схеме Горнера");
+        this.coefficients = coefficients;
         setSize(WIDTH, HEIGHT);
         Toolkit kit = Toolkit.getDefaultToolkit();
 // Отцентрировать окно приложения на экране
@@ -132,6 +133,9 @@ public class MainFrame extends JFrame {
         xPreferencesBox.add(StepTextField);
         xPreferencesBox.add(Box.createHorizontalGlue());
 
+        getContentPane().add(xPreferencesBox, BorderLayout.NORTH);
+
+
         // Создать кнопку "Вычислить"
         JButton buttonCalc = new JButton("Вычислить");
         // Задать действие на нажатие "Вычислить" и привязать к кнопке
@@ -216,7 +220,6 @@ public class MainFrame extends JFrame {
 
 
 //Добавление всех коробок, в основное окно(контейнер)
-        getContentPane().add(xPreferencesBox, BorderLayout.NORTH);
 
     }
 
@@ -249,7 +252,7 @@ public class MainFrame extends JFrame {
         }
     }
 
-    private void saveToGraphicsFile(File selectedFile)
+    protected void saveToGraphicsFile(File selectedFile)
     {
         try
         {
@@ -270,7 +273,29 @@ public class MainFrame extends JFrame {
 
     public static void main(String[] args) {
 	// write your code here
-        MainFrame frame = new MainFrame();
+        if(args.length==0)
+        {
+            System.out.println("Невозможно табулировать многочлен, для которого не задано ни одного кэффициента!");
+            System.exit(-1);
+        }
+        // Зарезервировать места в массиве коэффициентов столько,
+        // сколько аргументов командной строки
+        Double[] coefficients = new Double[args.length];
+        int i = 0;
+        try {
+            // Перебрать все аргументы, пытаясь преобразовать их в Double
+            for (String arg: args) {
+                coefficients[i++] = Double.parseDouble(arg);
+            }
+        }
+        catch (NumberFormatException ex) {
+            // Если преобразование невозможно - сообщить об ошибке и завершиться
+            System.out.println("Ошибка преобразования строки '" + args[i] +
+                    "' в число типа Double");
+            System.exit(-2);
+        }
+
+        MainFrame frame = new MainFrame(coefficients);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
