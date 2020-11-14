@@ -16,6 +16,8 @@ public class GornerTableCellRenderer implements TableCellRenderer {
     private DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance();
     private DecimalFormat formatterFloat = (DecimalFormat) NumberFormat.getInstance();
 
+    private JCheckBox checkBox;
+
     public GornerTableCellRenderer()
     {
 
@@ -34,9 +36,13 @@ public class GornerTableCellRenderer implements TableCellRenderer {
         dottedFloat.setDecimalSeparator('.');
         formatterFloat.setDecimalFormatSymbols(dottedFloat);
         // Разместить надпись внутри панели
-        panel.add(label);
+        //panel.add(label);
         // Установить выравнивание надписи по левому краю панели
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        checkBox = new JCheckBox("check", true);
+        checkBox.setLocation(0, 0);
+        checkBox.setSize(checkBox.getMaximumSize());
     }
 
     @Override
@@ -51,8 +57,12 @@ public class GornerTableCellRenderer implements TableCellRenderer {
                 // + иголка не null (т.е. мы что-то ищем)
                 // + значение иголки совпадает со значением ячейки таблицы -
                 // окрасить задний фон панели в красный цвет
-                panel.setBackground(Color.RED);
+                //panel.setBackground(Color.RED);
+                panel.removeAll();
+                panel.add(checkBox);
             } else {
+                panel.removeAll();
+                panel.add(label);
                 panel.setBackground(Color.WHITE);
             }
             return panel;
@@ -61,6 +71,9 @@ public class GornerTableCellRenderer implements TableCellRenderer {
         {
             String formattedFloat = formatterFloat.format(value);
             label.setText(formattedFloat);
+            panel.setBackground(Color.WHITE);
+            panel.removeAll();
+            panel.add(label);
             return panel;
         }
     }
