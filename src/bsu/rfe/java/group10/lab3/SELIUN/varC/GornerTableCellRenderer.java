@@ -9,6 +9,7 @@ import java.text.NumberFormat;
 
 public class GornerTableCellRenderer implements TableCellRenderer {
     private  String needle = null;
+    private boolean searchPolindrom;
 
     private JPanel panel = new JPanel();
     private JLabel label = new JLabel();
@@ -20,6 +21,7 @@ public class GornerTableCellRenderer implements TableCellRenderer {
 
     public GornerTableCellRenderer()
     {
+        searchPolindrom = false;
 
         formatter.setMaximumFractionDigits(8);
         formatter.setGroupingUsed(false);
@@ -35,14 +37,14 @@ public class GornerTableCellRenderer implements TableCellRenderer {
         DecimalFormatSymbols dottedFloat = formatter.getDecimalFormatSymbols();
         dottedFloat.setDecimalSeparator('.');
         formatterFloat.setDecimalFormatSymbols(dottedFloat);
-        // Разместить надпись внутри панели
-        //panel.add(label);
         // Установить выравнивание надписи по левому краю панели
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         checkBox = new JCheckBox("check", true);
         checkBox.setLocation(0, 0);
         checkBox.setSize(checkBox.getMaximumSize());
+
+        //System.out.println(polindrom(1.0));
     }
 
     @Override
@@ -56,16 +58,14 @@ public class GornerTableCellRenderer implements TableCellRenderer {
                 // Номер столбца = 1 (т.е. второй столбец)
                 // + иголка не null (т.е. мы что-то ищем)
                 // + значение иголки совпадает со значением ячейки таблицы -
-                // окрасить задний фон панели в красный цвет
-                //panel.setBackground(Color.RED);
+                // удалить все элементы в панели и вставаить ЧекБокс (флажок)
                 panel.removeAll();
                 panel.add(checkBox);
             } else {
                 panel.removeAll();
                 panel.add(label);
-                panel.setBackground(Color.WHITE);
+                //panel.setBackground(Color.WHITE);
             }
-            return panel;
         }
         else
         {
@@ -74,8 +74,15 @@ public class GornerTableCellRenderer implements TableCellRenderer {
             panel.setBackground(Color.WHITE);
             panel.removeAll();
             panel.add(label);
-            return panel;
         }
+        if (searchPolindrom)
+        {
+            if(polindrom(value))
+                panel.setBackground(Color.RED);
+            else
+                panel.setBackground(Color.WHITE);
+        }
+        return panel;
     }
 
     public void setNeedle(String needle) {
@@ -84,5 +91,49 @@ public class GornerTableCellRenderer implements TableCellRenderer {
 
     public String getNeedle() {
         return needle;
+    }
+
+    private static boolean polindrom(Object value)
+    {
+        String currValueString;
+        Double valueDouble = 0d;
+        //Форматируем в нужный формат: Double или Float
+        if(Double.class.equals(value.getClass()))
+            valueDouble = (Double) value;
+        else if(Float.class.equals(value.getClass()))
+            valueDouble = (double) (float) value;
+
+        valueDouble *= 10;
+        if(valueDouble % 10 == 0)
+        {
+            valueDouble /= 10;
+            Integer valueInt = (int) (double)valueDouble;
+           currValueString = valueInt.toString();
+        }
+        else
+        {
+            valueDouble /= 10;
+            currValueString = valueDouble.toString();
+        }
+        // System.out.println(currValueString);
+        currValueString = currValueString.replace(".", "");
+        //System.out.println(currValueString);
+        StringBuffer revValueBuffer = new StringBuffer(currValueString);
+        revValueBuffer = revValueBuffer.reverse();
+        String revValueString = revValueBuffer.toString();
+
+        //Проверка на палиндромность
+        if (revValueString.equals(currValueString))
+            return true;
+        else
+            return false;
+    }
+
+    public boolean isSearchPolindrom() {
+        return searchPolindrom;
+    }
+
+    public void setSearchPolindrom(boolean searchPolindrom) {
+        this.searchPolindrom = searchPolindrom;
     }
 }

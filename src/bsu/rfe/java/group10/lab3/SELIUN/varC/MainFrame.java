@@ -29,6 +29,8 @@ public class MainFrame extends JFrame {
     private JMenuItem saveToGraphicsMenuItem;
     private JMenuItem searchValueMenuItem;
     private JMenuItem aboutProgram;
+    private JMenuItem searchPolindromItem;
+
 
     private Box hBoxResult;
 
@@ -118,6 +120,19 @@ public class MainFrame extends JFrame {
         // По умолчанию пункт меню является недоступным (данных ещѐ нет)
         searchValueMenuItem.setEnabled(false);
 
+
+
+        Action searchPolindromAction = new AbstractAction("Найти палиндромы") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                renderer.setSearchPolindrom(true);
+                getContentPane().repaint();
+            }
+        };
+        searchPolindromItem = tableMenu.add(searchPolindromAction);
+        searchPolindromItem.setEnabled(false);
+
+
         Action showInfoAction = new AbstractAction("О программе") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -186,6 +201,7 @@ public class MainFrame extends JFrame {
                     saveToTextMenuItem.setEnabled(true);
                     saveToGraphicsMenuItem.setEnabled(true);
                     searchValueMenuItem.setEnabled(true);
+                    searchPolindromItem.setEnabled(true);
                 }catch(NumberFormatException ex)
                 {
                     // В случае ошибки преобразования показать сообщение об ошибке
