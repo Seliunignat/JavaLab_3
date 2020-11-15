@@ -354,11 +354,19 @@ public class MainFrame extends JFrame {
     {
         try
         {
+            DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance();
+            formatter.setMaximumFractionDigits(8);
+            formatter.setGroupingUsed(false);
+
+            DecimalFormatSymbols dottedDouble = formatter.getDecimalFormatSymbols();
+            dottedDouble.setDecimalSeparator('.');
+            formatter.setDecimalFormatSymbols(dottedDouble);
+
             DataOutputStream out = new DataOutputStream(new FileOutputStream(selectedFile));
             for(int i = 0; i < data.getRowCount(); i++)
             {
                 // Записать в поток вывода значение X в точке
-                out.writeDouble((Double)data.getValueAt(i,0));
+                out.writeDouble(Double.parseDouble(formatter.format(data.getValueAt(i,0))));
                 // значение многочлена в точке
                 out.writeDouble((Double)data.getValueAt(i,1));
             }
