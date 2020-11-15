@@ -1,7 +1,6 @@
 package bsu.rfe.java.group10.lab3.SELIUN.varC;
 
 import javax.swing.*;
-import javax.swing.text.html.Option;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,10 +25,11 @@ public class MainFrame extends JFrame {
     private JFileChooser fileChooser = null;
 
     private JMenuItem saveToTextMenuItem;
+    private JMenuItem saveToCSVMenuItem;
     private JMenuItem saveToGraphicsMenuItem;
     private JMenuItem searchValueMenuItem;
-    private JMenuItem aboutProgram;
-    private JMenuItem searchPolindromItem;
+    private JMenuItem aboutProgramMenuItem;
+    private JMenuItem searchPolindromMenuItem;
 
 
     private Box hBoxResult;
@@ -83,6 +83,28 @@ public class MainFrame extends JFrame {
         // По умолчанию пункт меню является недоступным (данных ещѐ нет)
         saveToTextMenuItem.setEnabled(false);
 
+        Action saveToCSVAction = new AbstractAction("Сохранить в CSV файл") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(fileChooser==null)
+                {
+                    // Если диалоговое окно "Открыть файл" ещѐ не создано,
+                    // то создать его
+                    fileChooser = new JFileChooser();
+                    // и инициализировать текущей директорией
+                    fileChooser.setCurrentDirectory(new File("."));
+                }
+                if(fileChooser.showSaveDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION)
+                    // Если результат его показа успешный, сохранить данные в
+                    // CSV файл
+                    saveToCSVFile(fileChooser.getSelectedFile());
+            }
+        };
+        // Добавить соответствующий пункт подменю в меню "Сохранить в текстовый файл"
+        saveToCSVMenuItem = fileMenu.add(saveToCSVAction);
+        // По умолчанию пункт меню является недоступным (данных ещѐ нет)
+        saveToCSVMenuItem.setEnabled(false);
+
         Action saveToGraphicsAction = new AbstractAction("Сохранить данные для построения графика") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -129,8 +151,8 @@ public class MainFrame extends JFrame {
                 getContentPane().repaint();
             }
         };
-        searchPolindromItem = tableMenu.add(searchPolindromAction);
-        searchPolindromItem.setEnabled(false);
+        searchPolindromMenuItem = tableMenu.add(searchPolindromAction);
+        searchPolindromMenuItem.setEnabled(false);
 
 
         Action showInfoAction = new AbstractAction("О программе") {
@@ -140,7 +162,7 @@ public class MainFrame extends JFrame {
             }
         };
 
-        aboutProgram = infoMenu.add(showInfoAction);
+        aboutProgramMenuItem = infoMenu.add(showInfoAction);
         searchValueMenuItem.setEnabled(true);
 
         XFromTextField = new JTextField("0.0", 10);
@@ -199,9 +221,10 @@ public class MainFrame extends JFrame {
                     getContentPane().validate();
                     // Пометить ряд элементов меню как доступных
                     saveToTextMenuItem.setEnabled(true);
+                    saveToCSVMenuItem.setEnabled(true);
                     saveToGraphicsMenuItem.setEnabled(true);
                     searchValueMenuItem.setEnabled(true);
-                    searchPolindromItem.setEnabled(true);
+                    searchPolindromMenuItem.setEnabled(true);
                 }catch(NumberFormatException ex)
                 {
                     // В случае ошибки преобразования показать сообщение об ошибке
@@ -258,10 +281,42 @@ public class MainFrame extends JFrame {
 
     }
 
+    private void saveToCSVFile(File selectedFile) {
+        try {
+            DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance();
+            formatter.setMaximumFractionDigits(8);
+            formatter.setGroupingUsed(false);
+
+            DecimalFormatSymbols dottedDouble = formatter.getDecimalFormatSymbols();
+            dottedDouble.setDecimalSeparator('.');
+            formatter.setDecimalFormatSymbols(dottedDouble);
+
+// Создать новый символьный поток вывода, направленный в указанный файл
+            PrintStream out = new PrintStream(selectedFile);
+            for (int i = 0; i < data.getRowCount(); i++)
+            {
+                for (int j = 0; j < data.getColumnCount();j++)
+                {
+                    out.print(formatter.format(data.getValueAt(i, j)));
+                    if(j != data.getColumnCount() - 1)
+                    {
+                        out.print(",");
+                    }
+                }
+                out.println("");
+            }
+// Закрыть поток
+            out.close();
+        }
+        catch (FileNotFoundException e)
+        {
+        }
+    }
+
     protected void saveToTextFile(File selectedFile) {
         try {
             DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance();
-            formatter.setMaximumFractionDigits(5);
+            formatter.setMaximumFractionDigits(8);
             formatter.setGroupingUsed(false);
 
             DecimalFormatSymbols dottedDouble = formatter.getDecimalFormatSymbols();
