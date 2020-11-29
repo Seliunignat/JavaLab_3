@@ -300,7 +300,7 @@ public class MainFrame extends JFrame {
                     out.print(formatter.format(data.getValueAt(i, j)));
                     if(j != data.getColumnCount() - 1)
                     {
-                        out.print(",");
+                        out.print(";");
                     }
                 }
                 out.println("");
@@ -368,7 +368,7 @@ public class MainFrame extends JFrame {
                 // Записать в поток вывода значение X в точке
                 out.writeDouble(Double.parseDouble(formatter.format(data.getValueAt(i,0))));
                 // значение многочлена в точке
-                out.writeDouble((Double)data.getValueAt(i,1));
+                out.writeDouble(Double.parseDouble(formatter.format(data.getValueAt(i,1))));
             }
             out.close();
         }
